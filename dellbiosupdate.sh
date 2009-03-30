@@ -12,7 +12,7 @@
 #############################################################################################################
 ##                                                                                                         ##
 ##      Name:           dellbiosupdate.sh                                                                  ##
-##      Version:        0.1.2                                                                              ##
+##      Version:        0.1.2.1                                                                            ##
 ##      Date:           Sat, Mar 28 2009                                                                   ##
 ##      Author:         Callea Gaetano Andrea (aka cga)                                                    ##
 ##      Contributors:                                                                                      ##
@@ -128,27 +128,28 @@ fi
 echo "Checking if BIOS Version ${BIOS_VERSION} for your ${COMPUTER} is valid............."
 sleep 3
 echo
-## if not the script will exit and remove the downloaded BIOS:
 dellBiosUpdate -t -f ~/bios-${BIOS_VERSION}.hdr >/dev/null 2>&1 ; STATUS_FAIL=$?
-	if [[ ${STATUS_FAIL} != 0 ]] ; then
-		echo "WARNING: BIOS HDR file BIOS version appears to be less than or equal to current BIOS version."
-		echo "This may result in bad things happening!!!!"
-		echo
-		rm -f ~/bios-${BIOS_VERSION}.hdr
-		echo "The downloaded ~/bios-${BIOS_VERSION}.hdr has been deleted."
-		echo
-		exit 4
 
-	## if BIOS is valid we load the needed DELL module and proceed with the update:
-	else
-		echo "This is a valid BIOS Version for your ${COMPUTER}, telling the operating system I want to update the BIOS:"
-		echo
-		modprobe dell_rbu
-		echo "The necessary 'dell_rbu' module has been loaded"
-		echo
-		## the actual update:
-		dellBiosUpdate -u -f ~/bios-${BIOS_VERSION}.hdr
-		echo
+## if not the script will exit and remove the downloaded BIOS:
+if [[ ${STATUS_FAIL} != 0 ]] ; then
+	echo "WARNING: BIOS HDR file BIOS version appears to be less than or equal to current BIOS version."
+	echo "This may result in bad things happening!!!!"
+	echo
+	rm -f ~/bios-${BIOS_VERSION}.hdr
+	echo "The downloaded ~/bios-${BIOS_VERSION}.hdr has been deleted."
+	echo
+	exit 4
+
+## if BIOS is valid we load the needed DELL module and proceed with the update:
+else
+	echo "This is a valid BIOS Version for your ${COMPUTER}, telling the operating system I want to update the BIOS:"
+	echo
+	modprobe dell_rbu
+	echo "The necessary 'dell_rbu' module has been loaded"
+	echo
+	## the actual update:
+	dellBiosUpdate -u -f ~/bios-${BIOS_VERSION}.hdr
+	echo
 fi
 
 ## to complete the update we must *soft* reboot:

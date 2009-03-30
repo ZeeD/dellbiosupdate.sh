@@ -11,7 +11,8 @@ Location:       http://github.com/cga/dellbiosupdate.sh/tree/master
 VERSION HISTORY:
 
 0.1.2.1 Mon, Mar 30 2009:
-	using "awk" instead of "cut" to get the "Product Name:" after a feedback from user "lvillani" who couldn't get the "Product Name:" properly set. Please test and let me know.
+	using "awk" instead of "cut" to get the "Product Name:" 
+	thanks to "lvillani" for feedback; Please test and let me know.
 
 0.1.2   Sun, Mar 29 2009:
 	use of "case/esac" in the select instead of too many if fi;
@@ -28,8 +29,7 @@ VERSION HISTORY:
 	added VERIONS_HISTORY file;
 
 0.1.0   Thu, Mar 26 2009:
-	first version;
-	it works 100% but it needs some more love ;)
+	first version; it works 100% but it needs some more love ;)
 
 TODO:
 
