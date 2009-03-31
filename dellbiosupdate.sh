@@ -32,21 +32,21 @@ if [[ ${EUID} != 0 ]] ; then
 fi
 
 ## here the scripts checks if the needed tools are installed:
-if ! which dellBiosUpdate curl html2text >/dev/null 2>&1 ; then
+if ! which dellBiosUpdate curl >/dev/null 2>&1 ; then
 	## if the script doesn't find the needed tools..........
 	echo
-	echo "Either libsmbios, html2text or curl was NOT found! should I install it for you?"
+	echo "Either libsmbios or curl was NOT found! should I install it for you?"
 	echo
 
 	## .........you get prompted to install libsmbios for your specific DISTRO:
 	select DISTRO in "Debian, Ubuntu and derivatives" "Red Hat, Fedora, CentOS and derivatives" "SuSE, OpenSuSE and derivatives" "Arch and derivatives" "Gentoo and derivatives" "Quit, I will install it myself" "Ok, I'm done installing. Let's move on!" ; do
 	case $DISTRO in
-		"Debian, Ubuntu and derivatives") apt-get install libsmbios-bin curl html2text ;;
-		"Red Hat, Fedora, CentOS and derivatives") yum install firmware-addon-dell libsmbios curl html2text ;;
-		"SuSE, OpenSuSE and derivatives") zypper install libsmbios-bin curl html2text ;;
-		"Arch and derivatives") pacman -S libsmbios curl html2text ;;
-		"Gentoo and derivatives") emerge -av libsmbios curl html2text ;;
-		"Quit, I will install it myself") echo ; echo "Please install libsmbios, html2text and curl"; echo ; exit 2 ;;
+		"Debian, Ubuntu and derivatives") apt-get install libsmbios-bin curl ;;
+		"Red Hat, Fedora, CentOS and derivatives") yum install firmware-addon-dell libsmbios curl ;;
+		"SuSE, OpenSuSE and derivatives") zypper install libsmbios-bin curl ;;
+		"Arch and derivatives") pacman -S libsmbios curl ;;
+		"Gentoo and derivatives") emerge -av libsmbios curl ;;
+		"Quit, I will install it myself") echo ; echo "Please install libsmbios and curl"; echo ; exit 2 ;;
 		"Ok, I'm done installing. Let's move on!") break ;;
 	esac
 	done
@@ -72,7 +72,7 @@ COMPUTER=$(getSystemId | grep "Product Name:" | awk -F\: '{print $NF}')
 ## now we 1) notify the current installed BIOS and 2) fetch all the available BIOS for your system.........
 echo "Your currently installed BIOS Version is ${BIOS_VERSION_BASE}, getting the available BIOS updates for your ${COMPUTER}....."
 echo
-BIOS_AVAILABLE=($(curl http://linux.dell.com/repo/firmware/bios-hdrs/ 2>/dev/null | html2text | grep "system_bios_ven_0x1028_dev_${SYSTEM_ID}_version_*" | cut -f2 -d' ' | tr -d '/' | sed 's/.*_//'))
+BIOS_AVAILABLE=($(curl http://linux.dell.com/repo/firmware/bios-hdrs/ 2>/dev/null | grep "system_bios_ven_0x1028_dev_${SYSTEM_ID}_version_" | sed 's/.*href="\([^\/]\+\)\/.*$/\1/'))
 
 ## ......we list them.......... 
 echo "These are the available BIOS updates available for your ${COMPUTER}:"
