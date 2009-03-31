@@ -26,7 +26,7 @@
 ## the script has to be run as root, let's make sure of that:
 if [[ ${EUID} != 0 ]] ; then
 	echo
-	echo "You must run this script as root!! See FAQs in REAMDE for information"
+	echo "You must run this script as root!! See FAQs in README for information"
 	echo
 	exit 1
 fi
