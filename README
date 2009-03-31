@@ -1,10 +1,10 @@
 CURRENT VERSION:
 
 Name:           dellbiosupdate.sh
-Version:        0.1.2.1
-Date:           Mon, Mar 30 2009
+Version:        0.1.3
+Date:           wed, Apr 01 2009
 Author:         Callea Gaetano Andrea (aka cga)
-Contributors:
+Contributors:   Riccardo Iaconelli (aka ruphy); ZeeD
 Languages:      BASH
 Location:       http://github.com/cga/dellbiosupdate.sh/tree/master
 
@@ -65,7 +65,7 @@ Q: can i help somewhow??
 A: yes indeed. help (especially test and feedback) and ideas are welcome =)
 
 Q: great!! can i contact you??
-A: for any suggestions and contributions contact cga @ 
+A: for any suggestions and contributions email cga from github or @ 
    callea (dot) gaetano (dot) andrea (at) gmail (dot) com
 
 Q: can i reuse the script to make my own??

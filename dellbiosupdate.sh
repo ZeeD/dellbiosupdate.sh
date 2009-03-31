@@ -12,10 +12,10 @@
 #############################################################################################################
 ##                                                                                                         ##
 ##      Name:           dellbiosupdate.sh                                                                  ##
-##      Version:        0.1.2.1                                                                            ##
-##      Date:           Sat, Mar 28 2009                                                                   ##
+##      Version:        0.1.3                                                                              ##
+##      Date:           Wed, Apr 01 2009                                                                   ##
 ##      Author:         Callea Gaetano Andrea (aka cga)                                                    ##
-##      Contributors:                                                                                      ##
+##      Contributors:   Riccardo Iaconelli (aka ruphy); Zeed                                               ##
 ##      Language:       BASH                                                                               ##
 ##      Location:       http://github.com/cga/dellbiosupdate.sh/tree/master                                ##
 ##                                                                                                         ##
@@ -32,9 +32,7 @@ if [[ ${EUID} != 0 ]] ; then
 fi
 
 ## here the scripts checks if the needed tools are installed:
-if which dellBiosUpdate curl html2text >/dev/null 2>&1 ; then
-	sleep 1 
-else
+if ! which dellBiosUpdate curl html2text >/dev/null 2>&1 ; then
 	## if the script doesn't find the needed tools..........
 	echo
 	echo "Either libsmbios, html2text or curl was NOT found! should I install it for you?"
@@ -62,14 +60,10 @@ getSystemId
 echo
 
 ## now let's get the data we need in order to get the right BIOS: "Syste ID" and "BIOS Version":
-SYSTEM_ID=$(getSystemId | grep "System ID:" | cut -f6 -d' ')
-BIOS_VERSION_BASE=$(getSystemId | grep "BIOS Version:" | cut -f3 -d' ')
-## plus the model of your computer:
-## original version with cut; i leave it here just in case.
-#COMPUTER=$(getSystemId | grep "Product Name:" | cut -f3,4,5 -d' ')
-## improved version with awk since user "lvillani" told me he couldn't get the ${COMPUTER} set properly.
-## please test and let me know if it works good for you (tm)
-COMPUTER=$(getSystemId | grep "Product Name:" | awk -F\: '{print $NF}')
+SYSTEM_ID=$(getSystemId | grep "System ID:" | awk -F\: '{print $NF}' | sed 's/^ *//')
+BIOS_VERSION_BASE=$(getSystemId | grep "BIOS Version:" | awk -F\: '{print $NF}' | sed 's/^ *//')
+## and the model of you computer:
+COMPUTER=$(getSystemId | grep "Product Name:" | awk -F\: '{print $NF}' | sed 's/^ *//')
 
 ## now we 1) notify the current installed BIOS and 2) fetch all the available BIOS for your system.........
 echo "Your currently installed BIOS Version is ${BIOS_VERSION_BASE}, getting the available BIOS updates for your ${COMPUTER}....."
