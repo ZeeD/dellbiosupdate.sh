@@ -32,9 +32,7 @@ if [[ ${EUID} != 0 ]] ; then
 fi
 
 ## here the scripts checks if the needed tools are installed:
-if which dellBiosUpdate curl html2text >/dev/null 2>&1 ; then
-	sleep 1 
-else
+if ! which dellBiosUpdate curl html2text >/dev/null 2>&1 ; then
 	## if the script doesn't find the needed tools..........
 	echo
 	echo "Either libsmbios, html2text or curl was NOT found! should I install it for you?"
