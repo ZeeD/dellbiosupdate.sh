@@ -1,8 +1,8 @@
 CURRENT VERSION:
 
 Name:           dellbiosupdate.sh
-Version:        0.1.2.1
-Date:           Mon, Mar 30 2009
+Version:        0.1.3
+Date:           Wed, Apr 01 2009
 Author:         Callea Gaetano Andrea (aka cga)
 Contributors:
 Languages:      BASH
@@ -10,8 +10,15 @@ Location:       http://github.com/cga/dellbiosupdate.sh/tree/master
 
 VERSION HISTORY:
 
+0.1.3	Wed, Apr 01 2009:
+	implemented "awk" and "sed" for a better selection for the vars:
+	SYSTEM_ID BIOS_VERSION_BASE and COMPUTER; "cut" was fallacious;
+	now it should get the correct values for all models;
+	optimized "if which fi" ; thanks ZeeD
+
 0.1.2.1 Mon, Mar 30 2009:
-	using "awk" instead of "cut" to get the "Product Name:" after a feedback from user "lvillani" who couldn't get the "Product Name:" properly set. Please test and let me know.
+	using "awk" instead of "cut" to get the "Product Name:" 
+	thanks to "lvillani" for feedback; Please test and let me know.
 
 0.1.2   Sun, Mar 29 2009:
 	use of "case/esac" in the select instead of too many if fi;
@@ -28,15 +35,15 @@ VERSION HISTORY:
 	added VERIONS_HISTORY file;
 
 0.1.0   Thu, Mar 26 2009:
-	first version;
-	it works 100% but it needs some more love ;)
+	first version; it works 100% but it needs some more love ;)
 
 TODO:
 
-0.1.3   implement a better script;
+1.3.1.1 improve array=($()) and few other details;
 
 0.2.0   make the script runnable with switches;
 
 THANKS TO:
 	thanks a *lot* to the folks in #bash freenode's chat room for help and snippets!!!
 	thanks to mind and tosky for suggestions.
+	thanks to lvillani for testing and providing feedback.

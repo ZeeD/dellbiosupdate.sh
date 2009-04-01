@@ -12,10 +12,10 @@
 #############################################################################################################
 ##                                                                                                         ##
 ##      Name:           dellbiosupdate.sh                                                                  ##
-##      Version:        0.1.2                                                                              ##
-##      Date:           Sat, Mar 28 2009                                                                   ##
+##      Version:        0.1.3                                                                              ##
+##      Date:           Wed, Apr 01 2009                                                                   ##
 ##      Author:         Callea Gaetano Andrea (aka cga)                                                    ##
-##      Contributors:                                                                                      ##
+##      Contributors:   Riccardo Iaconelli (aka ruphy); Zeed                                               ##
 ##      Language:       BASH                                                                               ##
 ##      Location:       http://github.com/cga/dellbiosupdate.sh/tree/master                                ##
 ##                                                                                                         ##
@@ -60,14 +60,10 @@ getSystemId
 echo
 
 ## now let's get the data we need in order to get the right BIOS: "Syste ID" and "BIOS Version":
-SYSTEM_ID=$(getSystemId | grep "System ID:" | cut -f6 -d' ')
-BIOS_VERSION_BASE=$(getSystemId | grep "BIOS Version:" | cut -f3 -d' ')
-## plus the model of your computer:
-## original version with cut; i leave it here just in case.
-#COMPUTER=$(getSystemId | grep "Product Name:" | cut -f3,4,5 -d' ')
-## improved version with awk since user "lvillani" told me he couldn't get the ${COMPUTER} set properly.
-## please test and let me know if it works good for you (tm)
-COMPUTER=$(getSystemId | grep "Product Name:" | awk -F\: '{print $NF}')
+SYSTEM_ID=$(getSystemId | grep "System ID:" | awk -F\: '{print $NF}' | sed 's/^ *//')
+BIOS_VERSION_BASE=$(getSystemId | grep "BIOS Version:" | awk -F\: '{print $NF}' | sed 's/^ *//')
+## and the model of you computer:
+COMPUTER=$(getSystemId | grep "Product Name:" | awk -F\: '{print $NF}' | sed 's/^ *//')
 
 ## now we 1) notify the current installed BIOS and 2) fetch all the available BIOS for your system.........
 echo "Your currently installed BIOS Version is ${BIOS_VERSION_BASE}, getting the available BIOS updates for your ${COMPUTER}....."
@@ -126,27 +122,28 @@ fi
 echo "Checking if BIOS Version ${BIOS_VERSION} for your ${COMPUTER} is valid............."
 sleep 3
 echo
-## if not the script will exit and remove the downloaded BIOS:
 dellBiosUpdate -t -f ~/bios-${BIOS_VERSION}.hdr >/dev/null 2>&1 ; STATUS_FAIL=$?
-	if [[ ${STATUS_FAIL} != 0 ]] ; then
-		echo "WARNING: BIOS HDR file BIOS version appears to be less than or equal to current BIOS version."
-		echo "This may result in bad things happening!!!!"
-		echo
-		rm -f ~/bios-${BIOS_VERSION}.hdr
-		echo "The downloaded ~/bios-${BIOS_VERSION}.hdr has been deleted."
-		echo
-		exit 4
 
-	## if BIOS is valid we load the needed DELL module and proceed with the update:
-	else
-		echo "This is a valid BIOS Version for your ${COMPUTER}, telling the operating system I want to update the BIOS:"
-		echo
-		modprobe dell_rbu
-		echo "The necessary 'dell_rbu' module has been loaded"
-		echo
-		## the actual update:
-		dellBiosUpdate -u -f ~/bios-${BIOS_VERSION}.hdr
-		echo
+## if not the script will exit and remove the downloaded BIOS:
+if [[ ${STATUS_FAIL} != 0 ]] ; then
+	echo "WARNING: BIOS HDR file BIOS version appears to be less than or equal to current BIOS version."
+	echo "This may result in bad things happening!!!!"
+	echo
+	rm -f ~/bios-${BIOS_VERSION}.hdr
+	echo "The downloaded ~/bios-${BIOS_VERSION}.hdr has been deleted."
+	echo
+	exit 4
+
+## if BIOS is valid we load the needed DELL module and proceed with the update:
+else
+	echo "This is a valid BIOS Version for your ${COMPUTER}, telling the operating system I want to update the BIOS:"
+	echo
+	modprobe dell_rbu
+	echo "The necessary 'dell_rbu' module has been loaded"
+	echo
+	## the actual update:
+	dellBiosUpdate -u -f ~/bios-${BIOS_VERSION}.hdr
+	echo
 fi
 
 ## to complete the update we must *soft* reboot:
