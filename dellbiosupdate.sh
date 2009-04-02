@@ -12,10 +12,10 @@
 #############################################################################################################
 ##                                                                                                         ##
 ##      Name:           dellbiosupdate.sh                                                                  ##
-##      Version:        0.1.3                                                                              ##
+##      Version:        0.1.3.1                                                                            ##
 ##      Date:           Wed, Apr 01 2009                                                                   ##
 ##      Author:         Callea Gaetano Andrea (aka cga)                                                    ##
-##      Contributors:   Riccardo Iaconelli (aka ruphy); Zeed                                               ##
+##      Contributors:   Riccardo Iaconelli (aka ruphy); ZeeD                                               ##
 ##      Language:       BASH                                                                               ##
 ##      Location:       http://github.com/cga/dellbiosupdate.sh/tree/master                                ##
 ##                                                                                                         ##
@@ -68,7 +68,7 @@ COMPUTER=$(getSystemId | grep "Product Name:" | awk -F\: '{print $NF}' | sed 's/
 ## now we 1) notify the current installed BIOS and 2) fetch all the available BIOS for your system.........
 echo "Your currently installed BIOS Version is ${BIOS_VERSION_BASE}, getting the available BIOS updates for your ${COMPUTER}....."
 echo
-BIOS_AVAILABLE=($(curl http://linux.dell.com/repo/firmware/bios-hdrs/ 2>/dev/null | grep "system_bios_ven_0x1028_dev_${SYSTEM_ID}_version_" | sed 's/.*version_\([^\/]\+\).*$/\1/')) 
+BIOS_AVAILABLE=($(curl http://linux.dell.com/repo/firmware/bios-hdrs/ 2>/dev/null | grep "${SYSTEM_ID}" | sed 's/.*version_\([^\/]\{1,\}\).*$/\1/')) 
 
 ## ......we list them.......... 
 echo "These are the available BIOS updates available for your ${COMPUTER}:"
