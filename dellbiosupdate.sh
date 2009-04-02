@@ -12,8 +12,8 @@
 #############################################################################################################
 ##                                                                                                         ##
 ##      Name:           dellbiosupdate.sh                                                                  ##
-##      Version:        0.1.3.1                                                                            ##
-##      Date:           Wed, Apr 01 2009                                                                   ##
+##      Version:        0.1.3.2                                                                            ##
+##      Date:           Thu, Apr 02 2009                                                                   ##
 ##      Author:         Callea Gaetano Andrea (aka cga)                                                    ##
 ##      Contributors:   Riccardo Iaconelli (aka ruphy); Vito De Tullio (aka ZeD)                           ##
 ##      Language:       BASH                                                                               ##
@@ -26,7 +26,7 @@
 ## the script has to be run as root, let's make sure of that:
 if [[ ${EUID} != 0 ]] ; then
 	echo
-	echo "You must run this script as root!! See FAQs in REAMDE for information"
+	echo "You must run this script as root!! See FAQs in README for information"
 	echo
 	exit 1
 fi
@@ -59,18 +59,23 @@ echo
 getSystemId
 echo
 
+## we define a function() for "getSysteId"; less code, same results:
+function getSystemId_about() {
+    getSystemId | awk -F': ' '/'"${1}"'/ { print $NF }' | sed 's/^ *//'
+}
+
 ## now let's get the data we need in order to get the right BIOS: "Syste ID" and "BIOS Version":
-SYSTEM_ID=$(getSystemId | grep "System ID:" | awk -F\: '{print $NF}' | sed 's/^ *//')
-BIOS_VERSION_BASE=$(getSystemId | grep "BIOS Version:" | awk -F\: '{print $NF}' | sed 's/^ *//')
+SYSTEM_ID=$(getSystemId_about "System ID")
+BIOS_VERSION_BASE=$(getSystemId_about "BIOS Version")
 ## and the model of you computer:
-COMPUTER=$(getSystemId | grep "Product Name:" | awk -F\: '{print $NF}' | sed 's/^ *//')
+COMPUTER=$(getSystemId_about "Product Name")
 
 ## now we 1) notify the current installed BIOS and 2) fetch all the available BIOS for your system.........
 echo "Your currently installed BIOS Version is ${BIOS_VERSION_BASE}, getting the available BIOS updates for your ${COMPUTER}....."
 echo
-BIOS_AVAILABLE=($(curl http://linux.dell.com/repo/firmware/bios-hdrs/ 2>/dev/null | grep "${SYSTEM_ID}" | sed 's/.*version_\([^\/]\{1,\}\).*$/\1/')) 
+BIOS_AVAILABLE=($(curl http://linux.dell.com/repo/firmware/bios-hdrs/ 2>/dev/null | grep "${SYSTEM_ID}" | sed 's/.*version_\([^\/]\{1,\}\).*$/\1/'))
 
-## ......we list them.......... 
+## ......we list them..........
 echo "These are the available BIOS updates available for your ${COMPUTER}:"
 echo
 
@@ -79,15 +84,15 @@ OLDPS3=$PS3
 COLUMNS=10
 PS3=$'\nNote that you actually *can* install the latest BIOS update without updating the immediately subsequent version.\n\nChoose the BIOS Version you want to install by typing the corresponding number: '
 	## ......and we make them selectable:
-	select BIOS_VERSION in "${BIOS_AVAILABLE[@]}" "I already have BIOS Version ${BIOS_VERSION_BASE} installed" ; do 
+	select BIOS_VERSION in "${BIOS_AVAILABLE[@]}" "I already have BIOS Version ${BIOS_VERSION_BASE} installed" ; do
 	## we offer option to quit script on user will if BIOS Version is already installed
 	if [ "$BIOS_VERSION" == "I already have BIOS Version ${BIOS_VERSION_BASE} installed" ] ; then
 		echo
 		echo "Thanks for using this script; now you know you have a tool to check if new BIOS versions are available ;)"
-		echo 
+		echo
 		exit 3
-	
-		elif [[ $BIOS_VERSION ]] ; then
+
+	elif [[ $BIOS_VERSION ]] ; then
 		break
 	fi
 done
