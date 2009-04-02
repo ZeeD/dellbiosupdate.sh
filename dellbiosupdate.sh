@@ -15,7 +15,7 @@
 ##      Version:        0.1.3.1                                                                            ##
 ##      Date:           Wed, Apr 01 2009                                                                   ##
 ##      Author:         Callea Gaetano Andrea (aka cga)                                                    ##
-##      Contributors:   Riccardo Iaconelli (aka ruphy); ZeeD                                               ##
+##      Contributors:   Riccardo Iaconelli (aka ruphy); Vito De Tullio (aka ZeD)                           ##
 ##      Language:       BASH                                                                               ##
 ##      Location:       http://github.com/cga/dellbiosupdate.sh/tree/master                                ##
 ##                                                                                                         ##
