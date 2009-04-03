@@ -1,8 +1,8 @@
 CURRENT VERSION:
 
 Name:           dellbiosupdate.sh
-Version:        0.1.3.1
-Date:           Wed, Apr 01 2009
+Version:        0.1.3.2
+Date:           Thu, Apr 02 2009
 Author:         Callea Gaetano Andrea (aka cga)
 Contributors:   Riccardo Iaconelli (aka ruphy); Vito De Tullio (aka ZeD)
 Languages:      BASH
@@ -10,16 +10,21 @@ Location:       http://github.com/cga/dellbiosupdate.sh/tree/master
 
 VERSION HISTORY:
 
+0.1.3.2 Thu, Apr 02 2009:
+	added function () {getSysteId_about} ; less code, same results;
+	thanks ZeD (even if you forgot to add | sed 's/^ *//' at the end
+	of the function :P)
+
 0.1.3.1 Wed, Apr 01 2009:
 	implemented new selection for var BIOS_VERSION_AVAILABLE with sed;
 	removed html2text as dependency since new var doesn't need it 
-	anymore; thanks ZeeD
+	anymore; thanks ZeD
 
 0.1.3	Wed, Apr 01 2009:
 	implemented "awk" and "sed" for a better selection for the vars:
 	SYSTEM_ID BIOS_VERSION_BASE and COMPUTER; "cut" was fallacious;
 	now it should get the correct values for all models;
-	optimized "if which fi" ; thanks ZeeD
+	optimized "if which fi" ; thanks ZeD
 
 0.1.2.1 Mon, Mar 30 2009:
 	using "awk" instead of "cut" to get the "Product Name:" 
@@ -43,6 +48,8 @@ VERSION HISTORY:
 	first version; it works 100% but it needs some more love ;)
 
 TODO:
+
+0.1.4	might be good to meh?
 
 0.2.0   make the script runnable with switches;
 

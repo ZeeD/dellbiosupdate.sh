@@ -12,8 +12,8 @@
 #############################################################################################################
 ##                                                                                                         ##
 ##      Name:           dellbiosupdate.sh                                                                  ##
-##      Version:        0.1.3.1                                                                            ##
-##      Date:           Wed, Apr 01 2009                                                                   ##
+##      Version:        0.1.3.2                                                                            ##
+##      Date:           Thu, Apr 02 2009                                                                   ##
 ##      Author:         Callea Gaetano Andrea (aka cga)                                                    ##
 ##      Contributors:   Riccardo Iaconelli (aka ruphy); Vito De Tullio (aka ZeD)                           ##
 ##      Language:       BASH                                                                               ##
@@ -59,7 +59,7 @@ echo
 getSystemId
 echo
 
-## little wrapper around getSystemId
+## we define a function() for "getSystemId"; less code, same results:
 function getSystemId_about() {
     getSystemId | awk -F': ' '/'"${1}"'/ { print $NF }'
 }
