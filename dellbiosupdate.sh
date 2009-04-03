@@ -59,9 +59,9 @@ echo
 getSystemId
 echo
 
-## we define a function() for "getSysteId"; less code, same results:
+## we define a function() for "getSystemId"; less code, same results:
 function getSystemId_about() {
-    getSystemId | awk -F': ' '/'"${1}"'/ { print $NF }' | sed 's/^ *//'
+    getSystemId | awk -F': *' '/'"${1}"'/ { print $NF }'
 }
 
 ## now let's get the data we need in order to get the right BIOS: "Syste ID" and "BIOS Version":
