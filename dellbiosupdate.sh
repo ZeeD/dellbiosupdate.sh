@@ -32,7 +32,7 @@ if [[ ${EUID} != 0 ]] ; then
 	exit 1
 
 ## if you are root the scripts goes on and checks if the needed tools are installed:
-elif ! which dellBiosUpdate curl >/dev/null 2>&1 ; then
+else ! which dellBiosUpdate curl >/dev/null 2>&1 ; then
 	## if the script doesn't find the needed tools..........
 	echo
 	echo "Either libsmbios or curl was NOT found! should I install it for you?"
