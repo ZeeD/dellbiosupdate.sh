@@ -12,7 +12,7 @@
 #############################################################################################################
 ##                                                                                                         ##
 ##      Name:           dellbiosupdate.sh                                                                  ##
-##      Version:        0.1.3.3                                                                            ##
+##      Version:        0.1.3.4                                                                            ##
 ##      Date:           Thu, Apr 02 2009                                                                   ##
 ##      Author:         Callea Gaetano Andrea (aka cga)                                                    ##
 ##      Contributors:   Riccardo Iaconelli (aka ruphy); Vito De Tullio (aka ZeD)                           ##
@@ -25,27 +25,29 @@
 
 ## the script has to be run as root, let's make sure of that:
 if [[ ${EUID} != 0 ]] ; then
+	## if you not are root the scripts exits and prompt you this message:
 	echo
 	echo "You must run this script as root!! See FAQs in README for information"
 	echo
 	exit 1
-fi
 
-## here the scripts checks if the needed tools are installed:
-if ! which dellBiosUpdate curl >/dev/null 2>&1 ; then
+## if you are root the scripts goes on and checks if the needed tools are installed:
+elif ! which dellBiosUpdate curl >/dev/null 2>&1 ; then
 	## if the script doesn't find the needed tools..........
 	echo
 	echo "Either libsmbios or curl was NOT found! should I install it for you?"
 	echo
 
-	## .........you get prompted to install libsmbios for your specific DISTRO:
-	select DISTRO in "Debian, Ubuntu and derivatives" "Red Hat, Fedora, CentOS and derivatives" "SuSE, OpenSuSE and derivatives" "Arch and derivatives" "Gentoo and derivatives" "Quit, I will install it myself" "Ok, I'm done installing. Let's move on!" ; do
+	## .........you get prompted to install libsmbios for your specific DISTRO: (see FAQs in README for your distro support)
+	select DISTRO in "Debian, Ubuntu and derivatives" "Red Hat, Fedora, CentOS and derivatives" "SuSE, OpenSuSE and derivatives" "Mandriva and derivatives" "Arch, Chakra and derivatives" "Gentoo and derivatives" "Sabayon and derivatives" "Quit, I will install it myself" "Ok, I'm done installing. Let's move on!" ; do
 	case $DISTRO in
 		"Debian, Ubuntu and derivatives") apt-get install libsmbios-bin curl ;;
 		"Red Hat, Fedora, CentOS and derivatives") yum install firmware-addon-dell libsmbios curl ;;
 		"SuSE, OpenSuSE and derivatives") zypper install libsmbios-bin curl ;;
-		"Arch and derivatives") pacman -S libsmbios curl ;;
+		"Mandriva and derivatives") urpmi libsmbios2 curl ;;
+		"Arch, Chakra and derivatives") pacman -S libsmbios curl ;;
 		"Gentoo and derivatives") emerge -av libsmbios curl ;;
+		"Sabayon and derivatives") equo install libsmbios curl ;;
 		"Quit, I will install it myself") echo ; echo "Please install libsmbios and curl"; echo ; exit 2 ;;
 		"Ok, I'm done installing. Let's move on!") break ;;
 	esac

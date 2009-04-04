@@ -1,11 +1,11 @@
 CURRENT VERSION:
 
 Name:           dellbiosupdate.sh
-Version:        0.1.3.3
-Date:           Thu, Apr 02 2009
+Version:        0.1.3.4
+Date:           Sat, Apr 04 2009
 Author:         Callea Gaetano Andrea (aka cga)
 Contributors:   Riccardo Iaconelli (aka ruphy); Vito De Tullio (aka ZeD)
-Languages:      BASH
+Language:       BASH
 Location:       http://github.com/cga/dellbiosupdate.sh/tree/master
 
 NOTE: See VERSION_HISTORY for info on Version History and TODO
@@ -29,6 +29,15 @@ Q: does it work for *any* DELL computer?
 A: well yes, as long as they have DELL's RBU technology; for more info see:
    http://linux.dell.com/wiki/index.php/Oss/Firmware_Tools  and
    http://linux.dell.com/wiki/index.php/Oss/Firmware_Tools/Systems_Missing_RBU
+
+Q: does it work on *any* distro?
+A: well, since it's bash it does as long as you run it in this shell.
+
+Q: why isn't my distro included?
+A: as you see the script checks if the needed tools are installed. it does it
+   for as many distro as i could check. if you want your distro in the script
+   please just drop me a line with the name for "libsmbios" package as needed 
+   by your distro install tool and if some else package is needed. thanks.
 
 Q: where did you get the process??
 A: the script is based on the orginal DELL procedure howto:
@@ -97,8 +106,5 @@ A: generally i fire up lastfm and select psytrance.
 Q: psytrance??? -.-
 A: indeed, it is not my usual cup of tea but hey... it rocks when you code.
 
-100!!!!! (i know... i'm stupid. but this is in the USELESS section) 
-
 Q: do you think that "developers developers developers" is the mantra of the new millenium?
 A: well AFAIK that could be the mantra of the millennium bug. 
-
