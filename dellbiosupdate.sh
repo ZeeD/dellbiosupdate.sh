@@ -76,11 +76,12 @@ SYSTEM_ID=$(getSystemId_about "System ID")
 BIOS_VERSION_BASE=$(getSystemId_about "BIOS Version")
 ## and the model of you computer:
 COMPUTER=$(getSystemId_about "Product Name")
+DELL_SITE='http://linux.dell.com/repo/firmware/bios-hdrs/'
 
 ## now we 1) notify the current installed BIOS and 2) fetch all the available BIOS for your system.........
 echo "Your currently installed BIOS Version is ${BIOS_VERSION_BASE}, getting the available BIOS updates for your ${COMPUTER}....."
 echo
-BIOS_AVAILABLE=($(curl http://linux.dell.com/repo/firmware/bios-hdrs/ 2>/dev/null | grep "${SYSTEM_ID}" | sed 's/.*version_\([^\/]\{1,\}\).*$/\1/'))
+BIOS_AVAILABLE=($(curl -s "${DELL_SITE}" | grep "${SYSTEM_ID}" | sed 's/.*version_\([^\/]\{1,\}\).*$/\1/'))
 
 ## ......we list them..........
 echo "These are the available BIOS updates available for your ${COMPUTER}:"
@@ -108,7 +109,7 @@ COLUMNS=
 PS3=$OLDPS3
 
 ## now that we have all the data, we need to set the URL to download the right BIOS:
-URL=http://linux.dell.com/repo/firmware/bios-hdrs/system_bios_ven_0x1028_dev_${SYSTEM_ID}_version_${BIOS_VERSION}/bios.hdr
+URL="${DELL_SITE}system_bios_ven_0x1028_dev_${SYSTEM_ID}_version_${BIOS_VERSION}/bios.hdr"
 
 ## if an unknown bios.hdr version exist then mv it and append $DATE; finally download the bios.hdr file with the version saved in the file name:
 if [ -f "~/bios.hdr" ] ; then
