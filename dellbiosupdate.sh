@@ -32,7 +32,7 @@ if [[ ${EUID} != 0 ]] ; then
 	exit 1
 
 ## if you are root the scripts goes on and checks if the needed tools are installed:
-else ! which dellBiosUpdate curl >/dev/null 2>&1 ; then
+elif ! which dellBiosUpdate curl >/dev/null 2>&1 ; then
 	## if the script doesn't find the needed tools..........
 	echo
 	echo "Either libsmbios or curl was NOT found! should I install it for you?"
@@ -65,6 +65,11 @@ echo
 function getSystemId_about() {
     getSystemId | awk -F': *' '/'"${1}"'/ { print $NF }'
 }
+
+if [ "$(getSystemId_about 'Is Dell')" = '0' ]; then
+    echo "Error! You *doesn't* have a Dell!"
+    exit 5
+fi
 
 ## now let's get the data we need in order to get the right BIOS: "Syste ID" and "BIOS Version":
 SYSTEM_ID=$(getSystemId_about "System ID")
