@@ -12,7 +12,7 @@
 #############################################################################################################
 ##                                                                                                         ##
 ##      Name:           dellbiosupdate.sh                                                                  ##
-##      Version:        0.1.3.5                                                                            ##
+##      Version:        0.1.3.6                                                                            ##
 ##      Date:           Wed, Apr 08 2009                                                                   ##
 ##      Author:         Callea Gaetano Andrea (aka cga)                                                    ##
 ##      Contributors:   Riccardo Iaconelli (aka ruphy); Vito De Tullio (aka ZeD)                           ##
@@ -25,7 +25,7 @@
 ## let's roll!!!
 
 ## the script has to be run as root, let's make sure of that:
-if [ ${EUID} -ne 0 ] ; then
+if (( ${EUID} != 0 )) ; then
 	## if you not are root the scripts exits and prompt you this message:
 	echo
 	echo "You must run this script as root!! See FAQs in README for informations"
@@ -133,7 +133,7 @@ sleep 3
 echo
 dellBiosUpdate -t -f ~/bios-${BIOS_VERSION}.hdr >/dev/null 2>&1
 	## if not the script will exit and remove the downloaded BIOS:
-	if [ $? -ne 0 ]; then
+	if (( $? != 0 )); then
 		echo "WARNING: BIOS HDR file BIOS version appears to be less than or equal to current BIOS version."
 		echo "This may result in bad things happening!!!!"
 		echo
@@ -147,7 +147,7 @@ dellBiosUpdate -t -f ~/bios-${BIOS_VERSION}.hdr >/dev/null 2>&1
 		echo "This is a valid BIOS Version for your ${COMPUTER}, telling the operating system I want to update the BIOS:"
 		echo
 		modprobe dell_rbu &> /dev/null
-		if [ $? -ne 0 ]; then
+		if (( $? != 0 )); then
 			echo "The necessary 'dell_rbu' module has NOT been loaded correctly, therefore the script stops here."
 			exit 5
 		else
@@ -162,7 +162,7 @@ dellBiosUpdate -t -f ~/bios-${BIOS_VERSION}.hdr >/dev/null 2>&1
 ## to complete the update we must *soft* reboot:
 echo
 read -p "In order to update the BIOS you *must* reboot your system, do you want to reboot now? [Y/n]"
-if [[ $REPLY = [Y] ]] ; then
+if [[ $REPLY = "Y" || $REPLY = "" ]] ; then
 	echo
 	echo "Rebooting in 5 seconds. Press CTRL+c to NOT reboot."
 	sleep 5
