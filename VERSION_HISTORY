@@ -1,7 +1,7 @@
 CURRENT VERSION:
 
 Name:           dellbiosupdate.sh
-Version:        0.1.3.6
+Version:        0.1.3.7
 Date:           Wed, Apr 08 2009
 Author:         Callea Gaetano Andrea (aka cga)
 Contributors:   Riccardo Iaconelli (aka ruphy); Vito De Tullio (aka ZeD)
@@ -10,6 +10,9 @@ Language:       BASH
 Location:       http://github.com/cga/dellbiosupdate.sh/tree/master
 
 VERSION HISTORY:
+
+0.1.3.7	Wed, Apr 08 2009:
+	my grand grand pa' used to tell me "consistency my son, consistency!"
 
 0.1.3.6	Wed, Apr 08 2009:
 	little fixes on parenthesis; now i got it right after reading FAQs:
