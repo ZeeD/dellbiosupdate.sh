@@ -12,10 +12,11 @@
 #############################################################################################################
 ##                                                                                                         ##
 ##      Name:           dellbiosupdate.sh                                                                  ##
-##      Version:        0.1.3.4                                                                            ##
-##      Date:           Thu, Apr 02 2009                                                                   ##
+##      Version:        0.1.3.7                                                                            ##
+##      Date:           Wed, Apr 08 2009                                                                   ##
 ##      Author:         Callea Gaetano Andrea (aka cga)                                                    ##
 ##      Contributors:   Riccardo Iaconelli (aka ruphy); Vito De Tullio (aka ZeD)                           ##
+##                      Matteo Cappadonna (aka mauser)                                                     ##
 ##      Language:       BASH                                                                               ##
 ##      Location:       http://github.com/cga/dellbiosupdate.sh/tree/master                                ##
 ##                                                                                                         ##
@@ -24,15 +25,16 @@
 ## let's roll!!!
 
 ## the script has to be run as root, let's make sure of that:
-if [[ ${EUID} != 0 ]] ; then
+if (( ${EUID} != 0 )) ; then
 	## if you not are root the scripts exits and prompt you this message:
 	echo
-	echo "You must run this script as root!! See FAQs in README for information"
+	echo "You must run this script as root!! See FAQs in README for informations"
 	echo
 	exit 1
+fi
 
 ## if you are root the scripts goes on and checks if the needed tools are installed:
-elif ! which dellBiosUpdate curl >/dev/null 2>&1 ; then
+if ! which dellBiosUpdate curl >/dev/null 2>&1 ; then
 	## if the script doesn't find the needed tools..........
 	echo
 	echo "Either libsmbios or curl was NOT found! should I install it for you?"
@@ -94,7 +96,7 @@ PS3=$'\nNote that you actually *can* install the latest BIOS update without upda
 	## ......and we make them selectable:
 	select BIOS_VERSION in "${BIOS_AVAILABLE[@]}" "I already have BIOS Version ${BIOS_VERSION_BASE} installed" ; do
 	## we offer option to quit script on user will if BIOS Version is already installed
-	if [ "$BIOS_VERSION" == "I already have BIOS Version ${BIOS_VERSION_BASE} installed" ] ; then
+	if [[ "$BIOS_VERSION" == "I already have BIOS Version ${BIOS_VERSION_BASE} installed" ]] ; then
 		echo
 		echo "Thanks for using this script; now you know you have a tool to check if new BIOS versions are available ;)"
 		echo
@@ -112,7 +114,7 @@ PS3=$OLDPS3
 URL="${DELL_SITE}system_bios_ven_0x1028_dev_${SYSTEM_ID}_version_${BIOS_VERSION}/bios.hdr"
 
 ## if an unknown bios.hdr version exist then mv it and append $DATE; finally download the bios.hdr file with the version saved in the file name:
-if [ -f "~/bios.hdr" ] ; then
+if [[ -f ~/"bios.hdr" ]] ; then
 	echo "I found an existing BIOS file (~/bios.hdr) of which I don't know the version and I'm going to back it up as ~/bios-$(date +%Y-%m-%d).hdr"
 	echo
 	sleep 1
@@ -135,34 +137,38 @@ fi
 echo "Checking if BIOS Version ${BIOS_VERSION} for your ${COMPUTER} is valid............."
 sleep 3
 echo
-dellBiosUpdate -t -f ~/bios-${BIOS_VERSION}.hdr >/dev/null 2>&1 ; STATUS_FAIL=$?
+dellBiosUpdate -t -f ~/bios-${BIOS_VERSION}.hdr >/dev/null 2>&1
+	## if not the script will exit and remove the downloaded BIOS:
+	if (( $? != 0 )) ; then
+		echo "WARNING: BIOS HDR file BIOS version appears to be less than or equal to current BIOS version."
+		echo "This may result in bad things happening!!!! Therefore the script stops here."
+		echo
+		rm -f ~/bios-${BIOS_VERSION}.hdr
+		echo "The downloaded ~/bios-${BIOS_VERSION}.hdr has been deleted."
+		echo
+		exit 4
 
-## if not the script will exit and remove the downloaded BIOS:
-if [[ ${STATUS_FAIL} != 0 ]] ; then
-	echo "WARNING: BIOS HDR file BIOS version appears to be less than or equal to current BIOS version."
-	echo "This may result in bad things happening!!!!"
-	echo
-	rm -f ~/bios-${BIOS_VERSION}.hdr
-	echo "The downloaded ~/bios-${BIOS_VERSION}.hdr has been deleted."
-	echo
-	exit 4
-
-## if BIOS is valid we load the needed DELL module and proceed with the update:
-else
-	echo "This is a valid BIOS Version for your ${COMPUTER}, telling the operating system I want to update the BIOS:"
-	echo
-	modprobe dell_rbu
-	echo "The necessary 'dell_rbu' module has been loaded"
-	echo
-	## the actual update:
-	dellBiosUpdate -u -f ~/bios-${BIOS_VERSION}.hdr
-	echo
-fi
+	## if BIOS is valid we load the needed DELL module and proceed with the update:
+	else
+		echo "This is a valid BIOS Version for your ${COMPUTER}, telling the operating system I want to update the BIOS:"
+		echo
+		modprobe dell_rbu >/dev/null 2&>1
+		if (( $? != 0 )) ; then
+			echo "The necessary 'dell_rbu' module has NOT been loaded correctly, therefore the script stops here."
+			exit 5
+		else
+			echo "The necessary 'dell_rbu' module has been loaded"
+			echo
+		fi
+		## the actual update:
+		dellBiosUpdate -u -f ~/bios-${BIOS_VERSION}.hdr
+		echo
+	fi
 
 ## to complete the update we must *soft* reboot:
 echo
 read -p "In order to update the BIOS you *must* reboot your system, do you want to reboot now? [Y/n]"
-if [[ $REPLY = [yY] ]] ; then
+if [[ $REPLY = "Y" || $REPLY = "" ]] ; then
 	echo
 	echo "Rebooting in 5 seconds. Press CTRL+c to NOT reboot."
 	sleep 5
