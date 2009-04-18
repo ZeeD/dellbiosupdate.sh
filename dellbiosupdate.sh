@@ -12,7 +12,7 @@
 #############################################################################################################
 ##                                                                                                         ##
 ##      Name:           dellbiosupdate.sh                                                                  ##
-##      Version:        0.1.3.7                                                                            ##
+##      Version:        0.1.3.7.1                                                                          ##
 ##      Date:           Wed, Apr 08 2009                                                                   ##
 ##      Author:         Callea Gaetano Andrea (aka cga)                                                    ##
 ##      Contributors:   Riccardo Iaconelli (aka ruphy); Vito De Tullio (aka ZeD)                           ##
@@ -90,7 +90,7 @@ echo "These are the available BIOS updates available for your ${COMPUTER}:"
 echo
 
 ## just to make sure PS3 doesn't get changed forever:
-OLDPS3=$PS3
+OLDPS3=${PS3}
 COLUMNS=10
 PS3=$'\nNote that you actually *can* install the latest BIOS update without updating the immediately subsequent version.\n\nChoose the BIOS Version you want to install by typing the corresponding number: '
 	## ......and we make them selectable:
@@ -108,7 +108,7 @@ PS3=$'\nNote that you actually *can* install the latest BIOS update without upda
 done
 echo
 COLUMNS=
-PS3=$OLDPS3
+PS3=${OLDPS3}
 
 ## now that we have all the data, we need to set the URL to download the right BIOS:
 URL="${DELL_SITE}system_bios_ven_0x1028_dev_${SYSTEM_ID}_version_${BIOS_VERSION}/bios.hdr"
