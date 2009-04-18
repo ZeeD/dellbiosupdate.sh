@@ -119,3 +119,20 @@ if modprobe dell_rbu >/dev/null 2>&1; then
 The script stops here."
 fi
 dellBiosUpdate -u -f "${BIOS_LOCAL_NAME}"
+if warn_and_ask 'In order to update the BIOS you *must* reboot your system.
+Do you want to reboot now?'; then
+    DCOPREF="$(kdialog --progressbar 'Rebooting in 5 seconds' 5)"
+    dcop "${DCOPREF}" showCancelButton 1
+    dcop "${DCOPREF}" setAutoClose 5
+    for i in `seq 5`; do
+        sleep 1
+        if [ "$(dcop "${DCOPREF}" wasCancelled)" == 'true' ]; then
+            dcop "${DCOPREF}" close
+            break
+        fi
+        dcop "${DCOPREF}" setProgress "${i}" 2>/dev/null
+        if [ "${i}" = '5' ]; then
+            reboot
+        fi
+    done
+fi
