@@ -41,7 +41,7 @@ SUPPORTED_SYSTEMS=(\
 
 # wrapper around kdialog
 # usage: menu "STRING" CHOICES
-# where CHOICES is a 2-dimensiona array like SUPPORTED_SYSTEMS
+# where CHOICES is a 2-dimensional-like array like SUPPORTED_SYSTEMS
 function menu() {
     I=0
     ARRAY=()
@@ -59,7 +59,7 @@ function menu() {
 if [ "${EUID}" != '0' ]; then
     error 2 'Must run this script as root'
 fi
-while ! system_has dellBiosUpdate curl ; do
+while ! system_has dellBiosUpdate curl; do
     if warn_and_ask 'libsmbios and curl needed!
 Should I install it for you?' ; then
         eval "$(menu "Please select your distro" "${SUPPORTED_SYSTEMS[@]}")"
@@ -74,7 +74,7 @@ function getSystemId_about() {
 }
 
 if [ "$(getSystemId_about 'Is Dell')" = '0' ]; then
-    error 4 'Error! You *doesn`t* have a Dell!'
+    error 4 'Error! You *don`t* have a Dell!'
 fi
 
 SYSTEM_ID="$(getSystemId_about 'System ID')"
@@ -97,3 +97,25 @@ if [ "${?}" != '0' ]; then # User did *not* pressed 'ok'
     error 5 'This script will not upgrade nothing'
 fi
 URL="${DELL_SITE}system_bios_ven_0x1028_dev_${SYSTEM_ID}_version_${BIOS_VERSION}/bios.hdr"
+
+# found an old bios file... from where it came from???
+if [ -f ~/'bios.hdr' ]; then
+    mv ~/'bios.hdr' "bios-$(date +%F).hdr"
+fi
+
+BIOS_LOCAL_NAME=~/"bios-${BIOS_VERSION}.hdr"
+if [ -f "${BIOS_LOCAL_NAME}" ]; then # I already have it!
+    error 6 'You already have this bios installed!'
+fi
+
+curl "${URL}" -o "${BIOS_LOCAL_NAME}"
+if dellBiosUpdate -t -f "${BIOS_LOCAL_NAME}" >/dev/null; then
+    rm "${BIOS_LOCAL_NAME}"
+    error 7 "${BIOS_LOCAL_NAME} appeared to be older than current BIOS version.
+It has been deleted"
+fi
+if modprobe dell_rbu >/dev/null 2>&1; then
+    error 8 "The necessary 'dell_rbu' module has NOT been loaded correctly.
+The script stops here."
+fi
+dellBiosUpdate -u -f "${BIOS_LOCAL_NAME}"

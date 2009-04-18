@@ -69,7 +69,7 @@ function getSystemId_about() {
 }
 
 if [ "$(getSystemId_about 'Is Dell')" = '0' ]; then
-    echo "Error! You *doesn't* have a Dell!"
+    echo "Error! You *don't* have a Dell!"
     exit 5
 fi
 
@@ -115,7 +115,7 @@ URL="${DELL_SITE}system_bios_ven_0x1028_dev_${SYSTEM_ID}_version_${BIOS_VERSION}
 
 ## if an unknown bios.hdr version exist then mv it and append $DATE; finally download the bios.hdr file with the version saved in the file name:
 if [[ -f ~/"bios.hdr" ]] ; then
-	echo "I found an existing BIOS file (~/bios.hdr) of which I don't know the version and I'm going to back it up as ~/bios-$(date +%Y-%m-%d).hdr"
+	echo "I found an existing BIOS file (~/bios.hdr) of which I don't know the version and I'm going to back it up as ~/bios-$(date +%F).hdr"
 	echo
 	sleep 1
 	mv ~/bios.hdr ~/bios-$(date +%Y-%m-%d).hdr
@@ -152,7 +152,7 @@ dellBiosUpdate -t -f ~/bios-${BIOS_VERSION}.hdr >/dev/null 2>&1
 	else
 		echo "This is a valid BIOS Version for your ${COMPUTER}, telling the operating system I want to update the BIOS:"
 		echo
-		modprobe dell_rbu >/dev/null 2&>1
+		modprobe dell_rbu >/dev/null 2>&1
 		if (( $? != 0 )) ; then
 			echo "The necessary 'dell_rbu' module has NOT been loaded correctly, therefore the script stops here."
 			exit 5
