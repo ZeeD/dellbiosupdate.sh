@@ -1,8 +1,8 @@
 CURRENT VERSION:
 
 Name:           dellbiosupdate.sh
-Version:        0.1.3.7
-Date:           Wed, Apr 08 2009
+Version:        0.1.4
+Date:           Wed, Apr 22 2009
 Author:         Callea Gaetano Andrea (aka cga)
 Contributors:   Riccardo Iaconelli (aka ruphy); Vito De Tullio (aka ZeD)
                 Matteo Cappadonna (aka mauser)
@@ -10,6 +10,10 @@ Language:       BASH
 Location:       http://github.com/cga/dellbiosupdate.sh/tree/master
 
 VERSION HISTORY:
+
+0.1.4	Wed, Apr 22 2009:
+	added check to see if it's a dell; fixed some typos;
+	added DELL_SITE var to shorten URL in commands;
 
 0.1.3.7	Wed, Apr 08 2009:
 	my grand grand pa' used to tell me "consistency my son, consistency!"
@@ -71,9 +75,7 @@ VERSION HISTORY:
 
 TODO:
 
-0.1.4	might be good to meh?
-
-0.2.0   make the script runnable with switches;
+0.2.0   make the script runnable with switches; i'm working on this.
 
 THANKS TO:
 	thanks a *lot* to the folks in #bash freenode's chat room for help and snippets!!!

@@ -12,8 +12,8 @@
 #############################################################################################################
 ##                                                                                                         ##
 ##      Name:           dellbiosupdate.sh                                                                  ##
-##      Version:        0.1.3.7.1                                                                          ##
-##      Date:           Wed, Apr 08 2009                                                                   ##
+##      Version:        0.1.4                                                                              ##
+##      Date:           Wed, Apr 22 2009                                                                   ##
 ##      Author:         Callea Gaetano Andrea (aka cga)                                                    ##
 ##      Contributors:   Riccardo Iaconelli (aka ruphy); Vito De Tullio (aka ZeD)                           ##
 ##                      Matteo Cappadonna (aka mauser)                                                     ##
@@ -73,11 +73,21 @@ SYSTEM_ID=$(getSystemId_about "System ID")
 BIOS_VERSION_BASE=$(getSystemId_about "BIOS Version")
 ## and the model of you computer:
 COMPUTER=$(getSystemId_about "Product Name")
+## we check that you actually have a DELL:
+ISDELL=$(getSystemId_about 'Is Dell')
+
+if (( ${ISDELL} != 1 )) ; then
+    echo "You *don't* have a Dell! better i stop here before your computer gets damaged...."
+    exit 3
+fi
+
+## and set DELL root URL for BIOS download:
+DELL_SITE="http://linux.dell.com/repo/firmware/bios-hdrs/"
 
 ## now we 1) notify the current installed BIOS and 2) fetch all the available BIOS for your system.........
 echo "Your currently installed BIOS Version is ${BIOS_VERSION_BASE}, getting the available BIOS updates for your ${COMPUTER}....."
 echo
-BIOS_AVAILABLE=($(curl http://linux.dell.com/repo/firmware/bios-hdrs/ 2>/dev/null | grep "${SYSTEM_ID}" | sed 's/.*version_\([^\/]\{1,\}\).*$/\1/'))
+BIOS_AVAILABLE=($(curl "${DELL_SITE}" 2>/dev/null | grep "${SYSTEM_ID}" | sed 's/.*version_\([^\/]\{1,\}\).*$/\1/'))
 
 ## ......we list them..........
 echo "These are the available BIOS updates available for your ${COMPUTER}:"
@@ -94,7 +104,7 @@ PS3=$'\nNote that you actually *can* install the latest BIOS update without upda
 		echo
 		echo "Thanks for using this script; now you know you have a tool to check if new BIOS versions are available ;)"
 		echo
-		exit 3
+		exit 4
 
 	elif [[ $BIOS_VERSION ]] ; then
 		break
@@ -105,14 +115,14 @@ COLUMNS=
 PS3=${OLDPS3}
 
 ## now that we have all the data, we need to set the URL to download the right BIOS:
-URL=http://linux.dell.com/repo/firmware/bios-hdrs/system_bios_ven_0x1028_dev_${SYSTEM_ID}_version_${BIOS_VERSION}/bios.hdr
+URL="${DELL_SITE}system_bios_ven_0x1028_dev_${SYSTEM_ID}_version_${BIOS_VERSION}/bios.hdr"
 
 ## if an unknown bios.hdr version exist then mv it and append $DATE; finally download the bios.hdr file with the version saved in the file name:
 if [[ -f ~/"bios.hdr" ]] ; then
-	echo "I found an existing BIOS file (~/bios.hdr) of which I don't know the version and I'm going to back it up as ~/bios-$(date +%Y-%m-%d).hdr"
+	echo "I found an existing BIOS file (~/bios.hdr) of which I don't know the version and I'm going to back it up as ~/bios-$(date +%F).hdr"
 	echo
 	sleep 1
-	mv ~/bios.hdr ~/bios-$(date +%Y-%m-%d).hdr
+	mv ~/bios.hdr ~/bios-$(date +%F).hdr
 	sleep 1
 	echo "Downloading selected BIOS Version ${BIOS_VERSION} for your ${COMPUTER} and saving it as ~/bios-${BIOS_VERSION}.hdr"
 	echo
@@ -140,16 +150,16 @@ dellBiosUpdate -t -f ~/bios-${BIOS_VERSION}.hdr >/dev/null 2>&1
 		rm -f ~/bios-${BIOS_VERSION}.hdr
 		echo "The downloaded ~/bios-${BIOS_VERSION}.hdr has been deleted."
 		echo
-		exit 4
+		exit 5
 
 	## if BIOS is valid we load the needed DELL module and proceed with the update:
 	else
 		echo "This is a valid BIOS Version for your ${COMPUTER}, telling the operating system I want to update the BIOS:"
 		echo
-		modprobe dell_rbu >/dev/null 2&>1
+		modprobe dell_rbu >/dev/null 2>&1
 		if (( $? != 0 )) ; then
 			echo "The necessary 'dell_rbu' module has NOT been loaded correctly, therefore the script stops here."
-			exit 5
+			exit 6
 		else
 			echo "The necessary 'dell_rbu' module has been loaded"
 			echo
