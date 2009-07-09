@@ -11,9 +11,14 @@
 ##                                                                                                         ##
 #############################################################################################################
 ##                                                                                                         ##
+##   AS OF THE 9TH OF JULY 2009 THIS SCRIPT NEEDS A MAINTAINER, SINCE  I WILL NOT DEVELOP IT ANY LONGER.   ##
+##   ANYWAY IT IS GOOD ENOUGH TO DO WHAT IT IS MEANT FOR; HAVE A LOOK AT THE FAQ AND USE IT W/ NPAT.       ##  
+##                                                                                                         ##
+#############################################################################################################
+##                                                                                                         ##
 ##      Name:           dellbiosupdate.sh                                                                  ##
-##      Version:        0.1.4                                                                              ##
-##      Date:           Wed, Apr 22 2009                                                                   ##
+##      Version:        1.0                                                                                ##
+##      Date:           Thu, Jul 09 2009                                                                   ##
 ##      Author:         Callea Gaetano Andrea (aka cga)                                                    ##
 ##      Contributors:   Riccardo Iaconelli (aka ruphy); Vito De Tullio (aka ZeD)                           ##
 ##                      Matteo Cappadonna (aka mauser)                                                     ##
@@ -73,13 +78,14 @@ SYSTEM_ID=$(getSystemId_about "System ID")
 BIOS_VERSION_BASE=$(getSystemId_about "BIOS Version")
 ## and the model of you computer:
 COMPUTER=$(getSystemId_about "Product Name")
-## we check that you actually have a DELL:
-ISDELL=$(getSystemId_about 'Is Dell')
+### THE "Is Dell" FIELD IS NOT PRESENT IN EVERY LIBSMBIOS THEREFORE THIS IS DISABLED FOR NOW 
+##we check that you actually have a DELL:
+# ISDELL=$(getSystemId_about "Is Dell")
 
-if (( ${ISDELL} != 1 )) ; then
-    echo "You *don't* have a Dell! better i stop here before your computer gets damaged...."
-    exit 3
-fi
+# if (( ${ISDELL} -ne 1 )) ; then
+ #    echo "You *don't* have a Dell! better I stop here before your computer gets damaged...."
+  #   exit 3
+# fi
 
 ## and set DELL root URL for BIOS download:
 DELL_SITE="http://linux.dell.com/repo/firmware/bios-hdrs/"
