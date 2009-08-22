@@ -11,9 +11,14 @@
 ##                                                                                                         ##
 #############################################################################################################
 ##                                                                                                         ##
+##   AS OF THE 9TH OF JULY 2009 THIS SCRIPT NEEDS A MAINTAINER, SINCE  I WILL NOT DEVELOP IT ANY LONGER.   ##
+##   ANYWAY IT IS GOOD ENOUGH TO DO WHAT IT IS MEANT FOR; HAVE A LOOK AT THE FAQ AND USE IT W/ NPAT.       ##  
+##                                                                                                         ##
+#############################################################################################################
+##                                                                                                         ##
 ##      Name:           dellbiosupdate.sh                                                                  ##
-##      Version:        0.1.3.7.1                                                                          ##
-##      Date:           Wed, Apr 08 2009                                                                   ##
+##      Version:        1.0                                                                                ##
+##      Date:           Thu, Jul 09 2009                                                                   ##
 ##      Author:         Callea Gaetano Andrea (aka cga)                                                    ##
 ##      Contributors:   Riccardo Iaconelli (aka ruphy); Vito De Tullio (aka ZeD)                           ##
 ##                      Matteo Cappadonna (aka mauser)                                                     ##
@@ -78,7 +83,17 @@ SYSTEM_ID=$(getSystemId_about "System ID")
 BIOS_VERSION_BASE=$(getSystemId_about "BIOS Version")
 ## and the model of you computer:
 COMPUTER=$(getSystemId_about "Product Name")
-DELL_SITE='http://linux.dell.com/repo/firmware/bios-hdrs/'
+### THE "Is Dell" FIELD IS NOT PRESENT IN EVERY LIBSMBIOS THEREFORE THIS IS DISABLED FOR NOW 
+##we check that you actually have a DELL:
+# ISDELL=$(getSystemId_about "Is Dell")
+
+# if (( ${ISDELL} -ne 1 )) ; then
+ #    echo "You *don't* have a Dell! better I stop here before your computer gets damaged...."
+  #   exit 3
+# fi
+
+## and set DELL root URL for BIOS download:
+DELL_SITE="http://linux.dell.com/repo/firmware/bios-hdrs/"
 
 ## now we 1) notify the current installed BIOS and 2) fetch all the available BIOS for your system.........
 echo "Your currently installed BIOS Version is ${BIOS_VERSION_BASE}, getting the available BIOS updates for your ${COMPUTER}....."
@@ -100,7 +115,7 @@ PS3=$'\nNote that you actually *can* install the latest BIOS update without upda
 		echo
 		echo "Thanks for using this script; now you know you have a tool to check if new BIOS versions are available ;)"
 		echo
-		exit 3
+		exit 4
 
 	elif [[ $BIOS_VERSION ]] ; then
 		break
@@ -118,7 +133,7 @@ if [[ -f ~/"bios.hdr" ]] ; then
 	echo "I found an existing BIOS file (~/bios.hdr) of which I don't know the version and I'm going to back it up as ~/bios-$(date +%F).hdr"
 	echo
 	sleep 1
-	mv ~/bios.hdr ~/bios-$(date +%Y-%m-%d).hdr
+	mv ~/bios.hdr ~/bios-$(date +%F).hdr
 	sleep 1
 	echo "Downloading selected BIOS Version ${BIOS_VERSION} for your ${COMPUTER} and saving it as ~/bios-${BIOS_VERSION}.hdr"
 	echo
@@ -146,7 +161,7 @@ dellBiosUpdate -t -f ~/bios-${BIOS_VERSION}.hdr >/dev/null 2>&1
 		rm -f ~/bios-${BIOS_VERSION}.hdr
 		echo "The downloaded ~/bios-${BIOS_VERSION}.hdr has been deleted."
 		echo
-		exit 4
+		exit 5
 
 	## if BIOS is valid we load the needed DELL module and proceed with the update:
 	else
@@ -155,7 +170,7 @@ dellBiosUpdate -t -f ~/bios-${BIOS_VERSION}.hdr >/dev/null 2>&1
 		modprobe dell_rbu >/dev/null 2>&1
 		if (( $? != 0 )) ; then
 			echo "The necessary 'dell_rbu' module has NOT been loaded correctly, therefore the script stops here."
-			exit 5
+			exit 6
 		else
 			echo "The necessary 'dell_rbu' module has been loaded"
 			echo
